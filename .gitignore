@@ -1,3 +1,6 @@
 .env
 .VSCodeCounter
 __pycache___
+/logs
+poetry.lock
+todo.md
