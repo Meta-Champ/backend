@@ -1,12 +1,11 @@
-from src.core.database import db_get
+from src.core.database import get_async_session
 from loguru import logger
 from passlib.context import CryptContext
 
-db = db_get()
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 
-async def event():
+async def event() -> None:
     logger.info('Event started')
 
     logger.info('Check users exists')
@@ -16,6 +15,7 @@ async def event():
 
 
 async def check_users_exists():
+    db = await anext(get_async_session())
     users_count = 0 # TODO: db get 'users' 
 
     if not users_count:
