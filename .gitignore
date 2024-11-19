@@ -5,4 +5,4 @@ __pycache___
 poetry.lock
 todo.md
 alembic.ini
-.pyc
+*.pyc

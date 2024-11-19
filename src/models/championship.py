@@ -16,3 +16,8 @@ class ChampionshipCreate(BaseModel):
 
 class ChampionshipUpdate(BaseModel):
     name: Optional[str] = Field(None, description="Название чемпионата")
+
+
+class ChampionshipDump(BaseModel):
+    data: list[Championship] = Field(..., description="Список чемпионатов")
+    total_count: int = Field(..., description="Общее количество чемпионатов")
