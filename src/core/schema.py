@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean, Text, BigInteger, Enum, Float
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean, Text, BigInteger, Enum, Float, ARRAY
 from sqlalchemy.types import TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql import func
@@ -149,7 +149,7 @@ class Protocol(Base):
     name: str = Column(String(32), nullable=False)
     text: str = Column(Text, nullable=False)
     status: ProtocolStatus = Column(Enum(ProtocolStatus), nullable=False, default=ProtocolStatus.PUBLISHED)
-    assigned_by: list[int] = Column(BigInteger, ForeignKey('users.id'), nullable=False)
+    assigned_by: list[int] = Column(ARRAY(BigInteger), ForeignKey('users.id'), nullable=False)
 
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now(), onupdate=func.now())
