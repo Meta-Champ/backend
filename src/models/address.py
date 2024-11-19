@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 
+
 class Address(BaseModel):
     id: int = Field(..., description="Уникальный идентификатор адреса")
     city: str = Field(..., description="Название города")

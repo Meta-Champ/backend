@@ -4,6 +4,7 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql import func
 from datetime import datetime
 
+from src.models.role import SystemRoles, DirectionRoles
 from src.models.person import Gender
 from src.models.protocol import ProtocolStatus
 from src.models.delivery import DeliveryStatus
@@ -26,32 +27,6 @@ class Address(Base):
 
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now(), onupdate=func.now())
-
-
-class Role(Base):
-    __tablename__ = 'roles'
-
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
-
-    name: str = Column(String(32), nullable=False)
-    code: str = Column(String(32), nullable=False)
-    is_default: bool = Column(Boolean, nullable=False)
-
-    created_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now())
-    updated_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now(), onupdate=func.now())
-
-
-class RoleRights(Base):
-    __tablename__ = 'roles_rights'
-
-    id = Column(Integer, primary_key=True, index=True)
-
-    role_id = Column(Integer, ForeignKey('roles.id'), nullable=False)
-    right = Column(String(32), nullable=False)
-    sign = Column(String(5), nullable=False, default='00000')
-    
-    created_at = Column(type_=TIMESTAMP(timezone=True), nullable=False, default=func.now())
-    updated_at = Column(type_=TIMESTAMP(timezone=True), nullable=False, default=func.now(), onupdate=func.now())
 
 
 class Passport(Base):
@@ -153,12 +128,12 @@ class User(Base):
 
     id: int = Column(Integer, primary_key=True, autoincrement=True)
     
-    role_id: int = Column(BigInteger, ForeignKey('roles.id'), nullable=False)
     person_id: int = Column(BigInteger, ForeignKey('persons.id'), nullable=True)
+    role: SystemRoles = Column(Enum(SystemRoles), nullable=False, default=SystemRoles.USER)
 
     username: str = Column(String(32), nullable=False)
-    password: str = Column(String(64), nullable=False, default=False)
-    password_salt: str = Column(String(16), nullable=False, default=False)
+    password: str = Column(String(64), nullable=False)
+    password_salt: str = Column(String(16), nullable=False)
 
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now(), onupdate=func.now())
@@ -184,7 +159,8 @@ class Participant(Base):
     __tablename__ = 'participants'
 
     id: int = Column(BigInteger, primary_key=True, nullable=False)
-    
+    role: DirectionRoles = Column(Enum(DirectionRoles), nullable=False, default=DirectionRoles.PARTICIPANT)
+
     user_id: int = Column(BigInteger, ForeignKey('users.id'), nullable=False)
     direction_id: int = Column(BigInteger, ForeignKey('directions.id'), nullable=False)
 

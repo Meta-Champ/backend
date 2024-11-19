@@ -1,8 +1,8 @@
 """000000_initial
 
-Revision ID: 7d485a15414b
+Revision ID: 458234a8be84
 Revises: 
-Create Date: 2024-11-19 01:19:46.132430
+Create Date: 2024-11-19 03:30:47.452104
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '7d485a15414b'
+revision: str = '458234a8be84'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -50,15 +50,6 @@ def upgrade() -> None:
     sa.Column('updated_at', sa.TIMESTAMP(timezone=True), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('roles',
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('name', sa.String(length=32), nullable=False),
-    sa.Column('code', sa.String(length=32), nullable=False),
-    sa.Column('is_default', sa.Boolean(), nullable=False),
-    sa.Column('created_at', sa.TIMESTAMP(timezone=True), nullable=False),
-    sa.Column('updated_at', sa.TIMESTAMP(timezone=True), nullable=False),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('directions',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('championship_id', sa.BigInteger(), nullable=False),
@@ -87,17 +78,6 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['passport_id'], ['passports.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('roles_rights',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('role_id', sa.Integer(), nullable=False),
-    sa.Column('right', sa.String(length=32), nullable=False),
-    sa.Column('sign', sa.String(length=5), nullable=False),
-    sa.Column('created_at', sa.TIMESTAMP(timezone=True), nullable=False),
-    sa.Column('updated_at', sa.TIMESTAMP(timezone=True), nullable=False),
-    sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_roles_rights_id'), 'roles_rights', ['id'], unique=False)
     op.create_table('delivery',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('direction_id', sa.BigInteger(), nullable=False),
@@ -121,15 +101,14 @@ def upgrade() -> None:
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('role_id', sa.BigInteger(), nullable=False),
     sa.Column('person_id', sa.BigInteger(), nullable=True),
+    sa.Column('role', sa.Enum('OWNER', 'ADMIN', 'USER', name='systemroles'), nullable=False),
     sa.Column('username', sa.String(length=32), nullable=False),
     sa.Column('password', sa.String(length=64), nullable=False),
     sa.Column('password_salt', sa.String(length=16), nullable=False),
     sa.Column('created_at', sa.TIMESTAMP(timezone=True), nullable=False),
     sa.Column('updated_at', sa.TIMESTAMP(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['person_id'], ['persons.id'], ),
-    sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('evaluations',
@@ -146,6 +125,7 @@ def upgrade() -> None:
     )
     op.create_table('participants',
     sa.Column('id', sa.BigInteger(), nullable=False),
+    sa.Column('role', sa.Enum('CHIEF_EXPERT', 'TECHNICAL_ADMINISTRATOR', 'INDUSTRIAL_EXPERT', 'EXPERT', 'PARTICIPANT', name='directionroles'), nullable=False),
     sa.Column('user_id', sa.BigInteger(), nullable=False),
     sa.Column('direction_id', sa.BigInteger(), nullable=False),
     sa.Column('created_at', sa.TIMESTAMP(timezone=True), nullable=False),
@@ -177,11 +157,8 @@ def downgrade() -> None:
     op.drop_table('users')
     op.drop_table('tasks')
     op.drop_table('delivery')
-    op.drop_index(op.f('ix_roles_rights_id'), table_name='roles_rights')
-    op.drop_table('roles_rights')
     op.drop_table('persons')
     op.drop_table('directions')
-    op.drop_table('roles')
     op.drop_table('passports')
     op.drop_table('championships')
     op.drop_table('addresses')
