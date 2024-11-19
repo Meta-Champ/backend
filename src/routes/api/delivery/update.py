@@ -42,11 +42,11 @@ async def request(
         return_as_model=True
     )
 
-    if row.status != DeliveryStatus.PENDING:
-        raise HTTPException(status_code=400, detail='Измнение статуса доставки закрыто')
-
     if not row:
         raise HTTPException(status_code=404, detail='Доставка не найдена')
+
+    if row.status != DeliveryStatus.PENDING:
+        raise HTTPException(status_code=400, detail='Изменение статуса доставки закрыто')
 
     await deliveries.update(db=conn, id = id, object=data)
 

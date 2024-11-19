@@ -1,8 +1,8 @@
 """000000_initial
 
-Revision ID: 458234a8be84
+Revision ID: e60050985fca
 Revises: 
-Create Date: 2024-11-19 03:30:47.452104
+Create Date: 2024-11-19 22:37:13.495956
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '458234a8be84'
+revision: str = 'e60050985fca'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -93,9 +93,9 @@ def upgrade() -> None:
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
     sa.Column('direction_id', sa.BigInteger(), nullable=False),
     sa.Column('name', sa.String(length=128), nullable=False),
-    sa.Column('max_score', sa.BigInteger(), nullable=False),
-    sa.Column('created_at', sa.Integer(), nullable=False),
-    sa.Column('updated_at', sa.Integer(), nullable=False),
+    sa.Column('max_score', sa.Float(), nullable=False),
+    sa.Column('created_at', sa.TIMESTAMP(timezone=True), nullable=False),
+    sa.Column('updated_at', sa.TIMESTAMP(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['direction_id'], ['directions.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

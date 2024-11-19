@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean, Text, BigInteger, Enum
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean, Text, BigInteger, Enum, Float
 from sqlalchemy.types import TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql import func
@@ -117,10 +117,10 @@ class Task(Base):
     direction_id: int = Column(BigInteger, ForeignKey('directions.id'), nullable=False)
 
     name: str = Column(String(128), nullable=False)
-    max_score: int = Column(BigInteger, nullable=False)
+    max_score: float = Column(Float, nullable=False)
 
-    created_at: int = Column(Integer, nullable=False)
-    updated_at: int = Column(Integer, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now(), onupdate=func.now())
 
 
 class User(Base):
@@ -182,4 +182,3 @@ class Evaluation(Base):
 
 def get_base():
     return Base
-    
