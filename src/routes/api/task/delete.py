@@ -1,7 +1,8 @@
 from src.core.database import get_async_session
 from src.core.schema import (
     Task as TaskSchema,
-    Participant as ParticipantSchema
+    Participant as ParticipantSchema,
+    Evaluation as EvaluationSchema
 )
 from src.middlewares import authenticate
 from src.models.task import Task
@@ -15,6 +16,7 @@ from fastcrud import FastCRUD
 router = APIRouter()
 tasks = FastCRUD(TaskSchema)
 participants = FastCRUD(ParticipantSchema)
+evaluations = FastCRUD(EvaluationSchema)
 
 
 @router.delete(
@@ -56,6 +58,7 @@ async def request(
         participant and participant.role != DirectionRoles.CHIEF_EXPERT:
         raise HTTPException(status_code=403, detail='Access denied')
 
+    await evaluations.delete(db=conn, task_id=id, allow_multiple=True)
     await tasks.delete(db=conn, id=id)
 
     return row

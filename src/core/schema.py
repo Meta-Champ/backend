@@ -175,6 +175,7 @@ class Evaluation(Base):
     direction_id: int = Column(BigInteger, ForeignKey('directions.id'), nullable=True)
     user_id: int = Column(BigInteger, ForeignKey('users.id'), nullable=False)
     task_id: int = Column(BigInteger, ForeignKey('tasks.id'), nullable=False)
+    score: float = Column(Float, nullable=False, default=0)
 
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), nullable=False, default=func.now(), onupdate=func.now())
