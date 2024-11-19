@@ -3,7 +3,7 @@ from src.core.schema import Championship as ChampionshipSchema
 from src.middlewares import authenticate
 from src.models.championship import Championship, ChampionshipUpdate
 from src.models.role import SystemRoles
-from src.utils.documentation_statuses import __400__, __403__, __404__, __500__
+from src.utils.documentation_statuses import __400__, __403__, __404__, __409__, __500__
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastcrud import FastCRUD
@@ -19,6 +19,7 @@ championships = FastCRUD(ChampionshipSchema)
         400: __400__,
         403: __403__,
         404: __404__,
+        409: __409__,
         500: __500__,
     },
     status_code=200,
@@ -52,12 +53,12 @@ async def request(
     )
 
     if exist and exist.id != id:
-        raise HTTPException(status_code=400, detail='Чемпионат с таким названием уже существует')
+        raise HTTPException(status_code=409, detail='Чемпионат с таким названием уже существует')
 
-    return await championships.update(
+    await championships.update(
         db=conn,
         id = id,
         object=ChampionshipUpdate(name=data.name),
-        schema_to_select=Championship,
-        return_as_model=True
     )
+
+    return Championship(**{**row, **data.model_dump()})

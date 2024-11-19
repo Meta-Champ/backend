@@ -3,7 +3,7 @@ from src.core.schema import Direction as DirectionSchema
 from src.middlewares import authenticate
 from src.models.direction import Direction, DirectionUpdate
 from src.models.role import SystemRoles
-from src.utils.documentation_statuses import __400__, __403__, __404__, __500__
+from src.utils.documentation_statuses import __400__, __403__, __404__, __409__, __500__
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastcrud import FastCRUD
@@ -19,6 +19,7 @@ directions = FastCRUD(DirectionSchema)
         400: __400__,
         403: __403__,
         404: __404__,
+        409: __409__,
         500: __500__,
     },
     status_code=200,
@@ -57,15 +58,22 @@ async def request(
     obj = {}
 
     if data.name is not None:
-        obj['name'] = data.name
+        obj[DirectionSchema.name.name] = data.name
 
     if data.is_juniors is not None:
-        obj['is_juniors'] = data.is_juniors
+        obj[DirectionSchema.is_juniors.name] = data.is_juniors
 
-    return await directions.update(
-        db=conn,
-        id = id,
-        object=obj,
+    conflict: Direction | None = await directions.get(
+        conn,
+        name = obj[DirectionSchema.name.name] if DirectionSchema.name.name in obj else data.name,
+        is_juniors = obj[DirectionSchema.is_juniors.name] if DirectionSchema.is_juniors.name in obj else data.is_juniors,
         schema_to_select=Direction,
         return_as_model=True
     )
+
+    if conflict and conflict.id != id:
+        raise HTTPException(status_code=409, detail='Направление с такими параметрами уже существует')
+
+    await directions.update(db=conn, id=id, object=obj)
+
+    return Direction(**{**row, **obj})
