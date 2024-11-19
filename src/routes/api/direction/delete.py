@@ -43,9 +43,6 @@ async def request(
         raise HTTPException(status_code=404, detail='Направление не найдено')
 
     # TODO: delete all related data (directions, protocols, etc.)
-    await directions.delete(
-        db=conn,
-        id=id
-    )
+    await directions.delete(db=conn, id=id)
 
     return row

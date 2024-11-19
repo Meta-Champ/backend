@@ -1,7 +1,7 @@
 from src.core.database import get_async_session
-from src.core.schema import Championship as ChampionshipSchema
+from src.core.schema import Participant as ParticipantSchema
 from src.middlewares import authenticate
-from src.models.championship import Championship
+from src.models.participant import Participant
 from src.models.role import SystemRoles
 from src.utils.documentation_statuses import __400__, __403__, __500__
 
@@ -9,40 +9,39 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastcrud import FastCRUD
 
 router = APIRouter()
-championships = FastCRUD(ChampionshipSchema)
+participants = FastCRUD(ParticipantSchema)
 
 
 @router.delete(
     path='/{id}',
-    response_model=Championship,
+    response_model=Participant,
     responses={
         400: __400__,
         403: __403__,
         500: __500__,
     },
     status_code=200,
-    summary='Удаление чемпионата',
-    response_description='Чемпионат удален',
+    summary='Удаление участника',
+    response_description='Участник удален',
 )
 async def request(
     id: int,
     user = Depends(authenticate.check),
     conn = Depends(get_async_session)
-) -> Championship | HTTPException:
-    if user.role != SystemRoles.OWNER:
+) -> Participant | HTTPException:
+    if user.role not in [SystemRoles.OWNER, SystemRoles.ADMIN]:
         raise HTTPException(status_code=403, detail='Access denied')
 
-    row: Championship | None = await championships.get(
+    row: Participant | None = await participants.get(
         conn,
         id = id,
-        schema_to_select=Championship,
+        schema_to_select=Participant,
         return_as_model=True
     )
 
     if not row:
-        raise HTTPException(status_code=404, detail='Чемпионат не найден')
+        raise HTTPException(status_code=404, detail='Участник не найден')
 
-    # TODO: delete all related data (directions, protocols, etc.)
-    await championships.delete(db=conn, id=id)
+    await participants.delete(db=conn, id=id)
 
     return row
