@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-
+from datetime import datetime
 from enum import Enum
 
 
@@ -18,8 +18,8 @@ class Protocol(BaseModel):
     text: str = Field(..., description="Текст протокола")
     status: ProtocolStatus = Field(ProtocolStatus.PUBLISHED, description="Статус протокола")
     assigned_by: list[int] = Field(..., description="Список идентификаторов пользователей, назначивших протокол")
-    created_at: int = Field(..., description="Дата и время создания протокола")
-    updated_at: int = Field(..., description="Дата и время последнего обновления протокола")
+    created_at: datetime = Field(..., description="Дата и время создания протокола")
+    updated_at: datetime = Field(..., description="Дата и время последнего обновления протокола")
 
 
 class ProtocolCreate(BaseModel):

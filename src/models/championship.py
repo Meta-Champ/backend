@@ -1,12 +1,13 @@
 from pydantic import BaseModel, Field
 from typing import Optional
+from datetime import datetime
 
 
 class Championship(BaseModel):
     id: int = Field(..., description="Уникальный идентификатор чемпионата")
     name: str = Field(..., description="Название чемпионата")
-    created_at: int = Field(..., description="Дата и время создания чемпионата")
-    updated_at: int = Field(..., description="Дата и время последнего обновления чемпионата")
+    created_at: datetime = Field(..., description="Дата и время создания чемпионата")
+    updated_at: datetime = Field(..., description="Дата и время последнего обновления чемпионата")
 
 
 class ChampionshipCreate(BaseModel):

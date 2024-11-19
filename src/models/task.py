@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
+from datetime import datetime
 
 
 class Task(BaseModel):
@@ -7,8 +8,8 @@ class Task(BaseModel):
     direction_id: int = Field(..., description="Идентификатор направления", ge=1)
     name: str = Field(..., description="Название задачи", max_length=128)
     max_score: int = Field(..., description="Максимальный балл задачи", ge=0)
-    created_at: int = Field(..., description="Дата и время создания задачи")
-    updated_at: int = Field(..., description="Дата и время последнего обновления задачи")
+    created_at: datetime = Field(..., description="Дата и время создания задачи")
+    updated_at: datetime = Field(..., description="Дата и время последнего обновления задачи")
 
 
 class TaskCreate(BaseModel):

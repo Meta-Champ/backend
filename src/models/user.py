@@ -1,6 +1,7 @@
 from pydantic import Field, BaseModel
 from typing import Optional
 from src.models.role import SystemRoles
+from datetime import datetime
 
 
 class User(BaseModel):
@@ -10,8 +11,8 @@ class User(BaseModel):
     username: str = Field(..., description="Имя пользователя", max_length=32)
     password: str = Field(..., description="Пароль пользователя", min_length=6)
     password_salt: str = Field(..., description="Соль для пароля пользователя", max_length=16)
-    created_at: int = Field(..., description="Дата и время создания пользователя")
-    updated_at: int = Field(..., description="Дата и время последнего обновления пользователя")
+    created_at: datetime = Field(..., description="Дата и время создания пользователя")
+    updated_at: datetime = Field(..., description="Дата и время последнего обновления пользователя")
 
 
 class UserCreate(BaseModel):

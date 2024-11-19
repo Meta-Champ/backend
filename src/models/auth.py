@@ -6,6 +6,11 @@ class AuthLogin(BaseModel):
     password: str = Field(..., examples=['password'], description='Пароль пользователя')
 
 
+class AuthRegister(BaseModel):
+    username: str = Field(..., examples=['admin'], description='Юзернейм пользователя')
+    password: str = Field(..., examples=['password'], description='Пароль пользователя')
+    password_confirm: str = Field(..., examples=['password'], description='Подтверждение пароля')
+
 class AuthTokens(BaseModel):
     access_token: str = Field(
         ...,

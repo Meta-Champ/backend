@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from src.models.role import DirectionRoles  
+from datetime import datetime
 
 
 class Participant(BaseModel):
@@ -7,7 +8,7 @@ class Participant(BaseModel):
     role: DirectionRoles = Field(..., description="Роль участника")
     user_id: int = Field(..., description="Идентификатор пользователя")
     direction_id: int = Field(..., description="Идентификатор направления")
-    created_at: int = Field(..., description="Дата и время создания участника")
+    created_at: datetime = Field(..., description="Дата и время создания участника")
 
 
 class ParticipantCreate(BaseModel):
