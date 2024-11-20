@@ -14,6 +14,13 @@ class User(BaseModel):
     created_at: datetime = Field(..., description="Дата и время создания пользователя")
     updated_at: datetime = Field(..., description="Дата и время последнего обновления пользователя")
 
+class UserExternal(BaseModel):
+    id: int
+    person_id: Optional[int] = Field(None, description="Идентификатор персоны пользователя")
+    role: SystemRoles = Field(..., description="Роль пользователя")
+    username: str = Field(..., description="Имя пользователя", max_length=32)
+    created_at: datetime = Field(..., description="Дата и время создания пользователя")
+    updated_at: datetime = Field(..., description="Дата и время последнего обновления пользователя")
 
 class UserCreate(BaseModel):
     person_id: Optional[int] = Field(None, description="Идентификатор персоны пользователя")
@@ -31,3 +38,8 @@ class UserUpdate(BaseModel):
     role: Optional[SystemRoles] = Field(None, description="Роль пользователя")
     username: Optional[str] = Field(None, description="Имя пользователя", max_length=32)
     password: Optional[str] = Field(None, description="Пароль пользователя", min_length=6)
+
+
+class UserDump(BaseModel):
+    data: list[UserExternal] = Field(..., description="Список пользователей")
+    total_count: int = Field(..., description="Общее количество пользователей")

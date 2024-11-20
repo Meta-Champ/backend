@@ -1,8 +1,9 @@
 .env
 .VSCodeCounter
-__pycache___
+__pycache__
 /logs
 poetry.lock
 todo.md
 alembic.ini
 *.pyc
+.pytest_cache
